@@ -8,56 +8,57 @@ namespace SpotPriceApp.core
     {
         public static List<SpotPriceReading> FetchPrices()
         {
-            HttpClientHandler handler = new HttpClientHandler
+            HttpClientHandler Handler = new HttpClientHandler
             {
                 AutomaticDecompression = System.Net.DecompressionMethods.All
             };
 
-            HttpClient client = new HttpClient(handler);
+            HttpClient Client = new HttpClient(Handler);
 
-            using (client)
+            using (Client)
             {
                 System.Diagnostics.Debug.WriteLine("Fetching API...");
-                client.BaseAddress = new Uri(ApplicationResource.SpotPrice_API_BaseAddress);
-                HttpResponseMessage response = client.GetAsync(ApplicationResource.SpotPrice_API_RequestUri).Result;
-                response.EnsureSuccessStatusCode();
-                return JsonConvert.DeserializeObject<List<SpotPriceReading>>(response.Content.ReadAsStringAsync().Result);
+                Client.BaseAddress = new Uri(ApplicationResource.SpotPrice_API_BaseAddress);
+                HttpResponseMessage Response = Client.GetAsync(ApplicationResource.SpotPrice_API_RequestUri).Result;
+                Response.EnsureSuccessStatusCode();
+                return JsonConvert.DeserializeObject<List<SpotPriceReading>>(Response.Content.ReadAsStringAsync().Result);
             }
         }
 
-        public static async void InitUpdate(int seconds, List<SpotPriceReading> readings, Action<Color, string, string> labelAction)
+        public static async void InitUpdate(int Seconds, List<SpotPriceReading> Readings, Action<LabelContent> LabelAction)
         {
-            if (seconds <= 0 || readings == null) { return; }
+            if (Seconds <= 0 || Readings == null) { return; }
 
-            var periodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(seconds));
-            while (await periodicTimer.WaitForNextTickAsync())
+            var PeriodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(Seconds));
+            while (await PeriodicTimer.WaitForNextTickAsync())
             {
-                UpdateLabel(readings, labelAction);
+                UpdateLabel(Readings, LabelAction);
             }
         }
 
-        private static void UpdateLabel(List<SpotPriceReading> readings, Action<Color, string, string> labelAction)
+        private static void UpdateLabel(List<SpotPriceReading> Readings, Action<LabelContent> LabelAction)
         {
             if (DateTime.Now.Hour == 0 && DateTime.Now.Minute == 00)
             {
-                readings = FetchPrices();
+                Readings = FetchPrices();
                 System.Diagnostics.Debug.WriteLine("Readings updated!");
             }
-            readings.ForEach(reading =>
+            LabelContent Content = new LabelContent(Readings.Count);
+            Readings.ForEach(Reading =>
             {
-                if (reading.time.Hour == DateTime.Now.Hour)
+                Content.Max = Reading.Value > Content.Max ? Reading.Value : Content.Max;
+                Content.Min = Reading.Value < Content.Min ? Reading.Value : Content.Min;
+                if (Reading.Time.Hour == DateTime.Now.Hour)
                 {
-                    string price = reading.value.ToString("0.00");
-
-                    string[] priceSplit = price.Split(",");
-                    string iconPrice = priceSplit[0] + "\n." + priceSplit[1];
-
-                    Color color = ColorUtil.GetColor(int.Parse(priceSplit[0]));
-
-                    labelAction.Invoke(color, price + " c/kWh", iconPrice);
-                    return;
+                    string PriceString = Reading.Value.ToString("0.00");
+                    Content.LabelPrice = PriceString + " c/kWh";
+                    string[] PriceSplit = PriceString.Split(",");
+                    Content.IconPrice = PriceSplit[0] + "\n." + PriceSplit[1];
+                    Content.Color = ColorUtil.GetColor(int.Parse(PriceSplit[0]));
                 }
+                Content.AddReading(Reading.Value);
             });
+            LabelAction.Invoke(Content);
         }
     }
 }

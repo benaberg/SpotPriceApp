@@ -12,11 +12,12 @@ namespace SpotPriceApp
         public MainWindow()
         {
             _Readings = SpotPriceFetcher.FetchPrices();
-            SpotPriceFetcher.InitUpdate(30, _Readings, (color, labelPrice, trayIconPrice) =>
+            SpotPriceFetcher.InitUpdate(30, _Readings, (Content) =>
             {
-                PriceLabel.Content = labelPrice;
-                PriceLabel.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
-                UpdateTrayIcon(color, trayIconPrice);
+                PriceLabel.Content = Content.LabelPrice;
+                Color Color = Content.Color;
+                PriceLabel.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(Color.A, Color.R, Color.G, Color.B));
+                UpdateTrayIcon(Content);
             });
 
             InitializeComponent();
@@ -30,23 +31,31 @@ namespace SpotPriceApp
                 };
 
             HorizontalListBox.ItemsSource = _Readings;
-            HorizontalListBox.ScrollIntoView(_Readings.Where(reading => reading.time.Hour == DateTime.Now.Hour).ToList().FirstOrDefault());
+            HorizontalListBox.ScrollIntoView(_Readings.Where(reading => reading.Time.Hour == DateTime.Now.Hour).ToList().FirstOrDefault());
 
             //Hide();
         }
 
-        public void UpdateTrayIcon(System.Drawing.Color color, string price)
+        public void UpdateTrayIcon(LabelContent Content)
         {
-            Bitmap bitmap = new Bitmap(16, 16);
-            Graphics graphics = Graphics.FromImage(bitmap);
-            Font font = new Font("Arial", 6, System.Drawing.FontStyle.Bold);
+            Bitmap Bitmap = new Bitmap(16, 16);
+            Graphics Graphics = Graphics.FromImage(Bitmap);
+            Font Font = new Font("Arial", 6, System.Drawing.FontStyle.Bold);
 
-            System.Drawing.Brush brush = new SolidBrush(color);
+            System.Drawing.Brush Brush = new SolidBrush(Content.Color);
 
-            graphics.DrawString(price, font, brush, 0, 0);
+            Graphics.DrawString(Content.IconPrice, Font, Brush, 0, 0);
 
-            Icon icon = System.Drawing.Icon.FromHandle(bitmap.GetHicon());
-            _NotifyIcon.Icon = icon;
+            Icon Icon = System.Drawing.Icon.FromHandle(Bitmap.GetHicon());
+
+            _NotifyIcon.Icon = Icon;
+            _NotifyIcon.Text = "Today's prices:\n\nMin: " 
+                + Content.Min.ToString("0.00") 
+                + " c/kWh\nMax: "
+                + Content.Max.ToString("0.00") 
+                + " c/kWh\nAvg: "
+                + Content.Avg.ToString("0.00")
+                + " c/kWh";
         }
 
         protected override void OnStateChanged(EventArgs e)

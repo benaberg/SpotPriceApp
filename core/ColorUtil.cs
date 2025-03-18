@@ -2,23 +2,23 @@
 {
     class ColorUtil
     {
-        public static Color GetColor(int cents)
+        public static Color GetColor(int Cents)
         {
-            Color color;
+            Color Color;
 
-            if (cents < 25)
+            if (Cents < 25)
             {
-                color = Color.LimeGreen;
+                Color = Color.LimeGreen;
             }
-            else if (cents < 50)
+            else if (Cents < 50)
             {
-                color = Color.Yellow;
+                Color = Color.Yellow;
             }
             else
             {
-                color = Color.Red;
+                Color = Color.Red;
             }
-            return color;
+            return Color;
         }
     }
 }

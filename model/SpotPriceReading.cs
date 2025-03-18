@@ -2,19 +2,19 @@
 {
     internal class SpotPriceReading
     {
-        public required DateTimeOffset time { get; set; }
-        public required float value { get; set; }
+        public required DateTimeOffset Time { get; set; }
+        public required float Value { get; set; }
 
         public override string ToString()
         {
-            return PadBoth(time.Hour.ToString("D2"), 6) + "\n" + value.ToString("0.00") + " c";
+            return PadBoth(Time.Hour.ToString("D2"), 6) + "\n" + Value.ToString("0.00") + " c";
         }
 
-        private string PadBoth(string source, int length)
+        private string PadBoth(string Source, int Length)
         {
-            int spaces = length - source.Length;
-            int padLeft = spaces / 2 + source.Length;
-            return source.PadLeft(padLeft).PadRight(length);
+            int Spaces = Length - Source.Length;
+            int PadLeft = Spaces / 2 + Source.Length;
+            return Source.PadLeft(PadLeft).PadRight(Length);
         }
     }
 }

@@ -10,14 +10,14 @@ namespace SpotPriceApp.core
         public Color YellowColor { get; set; }
         public Color RedColor { get; set; }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object Value, Type TargetType, object Parameter, CultureInfo Culture)
         {
-            if (value == null) 
+            if (Value == null) 
             { 
                 return Color.Black.Name;
             }
 
-            Color color = ColorUtil.GetColor(int.Parse(value.ToString().Trim().Split("\n")[1].Split(",")[0]));
+            Color color = ColorUtil.GetColor(int.Parse(Value.ToString()!.Trim().Split("\n")[1].Split(",")[0]));
             
             if (color == Color.LimeGreen) 
             {
