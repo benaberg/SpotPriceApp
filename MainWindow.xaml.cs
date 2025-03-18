@@ -6,7 +6,7 @@ namespace SpotPriceApp
 {
     public partial class MainWindow : Window
     {
-        private readonly List<SpotPriceReading>? _Readings = null;
+        private readonly List<SpotPriceReading>? _Readings = new List<SpotPriceReading>();
         private NotifyIcon _NotifyIcon = new NotifyIcon();
 
         public MainWindow()
@@ -18,6 +18,7 @@ namespace SpotPriceApp
                 PriceLabel.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
                 UpdateTrayIcon(color, trayIconPrice);
             });
+
             InitializeComponent();
 
             _NotifyIcon.Visible = true;
@@ -27,7 +28,11 @@ namespace SpotPriceApp
                     Show();
                     WindowState = WindowState.Normal;
                 };
-            Hide();
+
+            HorizontalListBox.ItemsSource = _Readings;
+            HorizontalListBox.ScrollIntoView(_Readings.Where(reading => reading.time.Hour == DateTime.Now.Hour).ToList().FirstOrDefault());
+
+            //Hide();
         }
 
         public void UpdateTrayIcon(System.Drawing.Color color, string price)

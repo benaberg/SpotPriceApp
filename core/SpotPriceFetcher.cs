@@ -52,21 +52,8 @@ namespace SpotPriceApp.core
                     string[] priceSplit = price.Split(",");
                     string iconPrice = priceSplit[0] + "\n." + priceSplit[1];
 
-                    Color color;
+                    Color color = ColorUtil.GetColor(int.Parse(priceSplit[0]));
 
-                    int cents = int.Parse(priceSplit[0]);
-                    if (cents < 25)
-                    {
-                        color = Color.LimeGreen;
-                    }
-                    else if (cents < 50)
-                    {
-                        color = Color.Yellow;
-                    }
-                    else
-                    {
-                        color = Color.Red;
-                    }
                     labelAction.Invoke(color, price + " c/kWh", iconPrice);
                     return;
                 }
