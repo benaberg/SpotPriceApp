@@ -12,7 +12,7 @@ namespace SpotPriceApp
         public MainWindow()
         {
             _Readings = SpotPriceFetcher.FetchPrices();
-            SpotPriceFetcher.InitUpdate(5, _Readings, (Content) =>
+            SpotPriceFetcher.InitUpdate(30, _Readings, (Content) =>
             {
                 PriceLabel.Content = Content.LabelPrice;
                 Color Color = Content.Color;
