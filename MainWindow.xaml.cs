@@ -12,7 +12,7 @@ namespace SpotPriceApp
         public MainWindow()
         {
             _Readings = SpotPriceFetcher.FetchPrices();
-            SpotPriceFetcher.InitUpdate(30, _Readings, (Content) =>
+            SpotPriceFetcher.InitUpdate(5, _Readings, (Content) =>
             {
                 PriceLabel.Content = Content.LabelPrice;
                 Color Color = Content.Color;
@@ -33,7 +33,7 @@ namespace SpotPriceApp
             HorizontalListBox.ItemsSource = _Readings;
             HorizontalListBox.ScrollIntoView(_Readings.Where(reading => reading.Time.Hour == DateTime.Now.Hour).ToList().FirstOrDefault());
 
-            //Hide();
+            Hide();
         }
 
         public void UpdateTrayIcon(LabelContent Content)
