@@ -8,21 +8,42 @@ namespace SpotPriceApp.core
     {
         public static List<SpotPriceReading> FetchPrices()
         {
+            List<SpotPriceReading>? _readings = null;
             HttpClientHandler Handler = new()
             {
                 AutomaticDecompression = System.Net.DecompressionMethods.All
             };
-
-            HttpClient Client = new(Handler);
-
+            HttpClient Client = new(Handler)
+            {
+                BaseAddress = new Uri(ApplicationResource.SpotPrice_API_BaseAddress)
+            };
             using (Client)
             {
-                System.Diagnostics.Debug.WriteLine("Fetching API...");
-                Client.BaseAddress = new Uri(ApplicationResource.SpotPrice_API_BaseAddress);
-                HttpResponseMessage Response = Client.GetAsync(ApplicationResource.SpotPrice_API_RequestPath).Result;
-                Response.EnsureSuccessStatusCode();
-                return JsonConvert.DeserializeObject<List<SpotPriceReading>>(Response.Content.ReadAsStringAsync().Result);
+                int RetryInterval = int.Parse(ApplicationResource.SpotPrice_HTTP_RetryInterval);
+                do
+                {
+                    try
+                    {
+                        _readings = PerformFetch(Client);
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Request failed! Reason: " + e.Message);
+                        System.Diagnostics.Debug.WriteLine("Retrying in " + RetryInterval + " seconds...");
+                        Thread.Sleep(RetryInterval * 1000);
+                    }
+                }
+                while (_readings == null);
             }
+            return _readings;
+        }
+
+        private static List<SpotPriceReading> PerformFetch(HttpClient Client)
+        {
+            System.Diagnostics.Debug.WriteLine("Fetching API...");
+            HttpResponseMessage Response = Client.GetAsync(ApplicationResource.SpotPrice_API_RequestPath).Result;
+            Response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<List<SpotPriceReading>>(Response.Content.ReadAsStringAsync().Result);
         }
 
         public static async void InitUpdate(int Seconds, List<SpotPriceReading>? _readings, Action<LabelContent> LabelAction)

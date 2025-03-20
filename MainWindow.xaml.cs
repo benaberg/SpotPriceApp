@@ -10,8 +10,8 @@ namespace SpotPriceApp
 
         public MainWindow()
         {
-            List<SpotPriceReading>? _readings = SpotPriceFetcher.FetchPrices();
-            SpotPriceFetcher.InitUpdate(30, _readings, (Content) =>
+            List<SpotPriceReading> Readings = SpotPriceFetcher.FetchPrices();
+            SpotPriceFetcher.InitUpdate(5, Readings, (Content) =>
             {
                 PriceLabel.Content = Content.LabelPrice;
                 Color Color = Content.Color;
@@ -29,8 +29,8 @@ namespace SpotPriceApp
                     WindowState = WindowState.Normal;
                 };
 
-            HorizontalListBox.ItemsSource = _readings;
-            HorizontalListBox.ScrollIntoView(_readings.Where(reading => reading.Time.Hour == DateTime.Now.Hour).ToList().FirstOrDefault());
+            HorizontalListBox.ItemsSource = Readings;
+            HorizontalListBox.ScrollIntoView(Readings.Where(reading => reading.Time.Hour == DateTime.Now.Hour).ToList().FirstOrDefault());
 
             Hide();
         }

@@ -125,4 +125,8 @@
     <value>Prices/GetPrices?mode=1</value>
     <comment>API request path</comment>
   </data>
+  <data name="SpotPrice.HTTP.RetryInterval" xml:space="preserve">
+    <value>5</value>
+    <comment>HTTP request retry interval (seconds)</comment>
+  </data>
 </root>

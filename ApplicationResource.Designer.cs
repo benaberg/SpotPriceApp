@@ -77,5 +77,14 @@ namespace SpotPriceApp {
                 return ResourceManager.GetString("SpotPrice.API.RequestPath", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5.
+        /// </summary>
+        internal static string SpotPrice_HTTP_RetryInterval {
+            get {
+                return ResourceManager.GetString("SpotPrice.HTTP.RetryInterval", resourceCulture);
+            }
+        }
     }
 }
