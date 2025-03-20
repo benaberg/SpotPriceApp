@@ -8,6 +8,8 @@
         public string IconPrice { get; set; } = string.Empty;
         public float Min { get; set; } = float.MaxValue;
         public float Max { get; set; } = float.MinValue;
+        public DateTimeOffset MinTime { get; set; }
+        public DateTimeOffset MaxTime { get; set; }
         public Color Color { get; set; } = Color.LimeGreen;
         public float Avg
         {

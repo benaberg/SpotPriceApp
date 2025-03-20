@@ -69,8 +69,16 @@ namespace SpotPriceApp.core
             LabelContent Content = new(Readings.Count);
             Readings.ForEach(Reading =>
             {
-                Content.Max = Reading.Value > Content.Max ? Reading.Value : Content.Max;
-                Content.Min = Reading.Value < Content.Min ? Reading.Value : Content.Min;
+                if (Reading.Value > Content.Max)
+                {
+                    Content.Max = Reading.Value;
+                    Content.MaxTime = Reading.Time;
+                }
+                if (Reading.Value < Content.Min)
+                {
+                    Content.Min = Reading.Value;
+                    Content.MinTime = Reading.Time;
+                }
                 if (Reading.Time.Hour == DateTime.Now.Hour)
                 {
                     string PriceString = Reading.Value.ToString("0.00");

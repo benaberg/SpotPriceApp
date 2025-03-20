@@ -50,9 +50,13 @@ namespace SpotPriceApp
             _NotifyIcon.Icon = Icon;
             _NotifyIcon.Text = "Today's prices:\n\nMin: " 
                 + Content.Min.ToString("0.00") 
-                + " c/kWh\nMax: "
+                + " c/kWh (" 
+                + Content.MinTime.Hour + ":00)\n"
+                + "Max: "
                 + Content.Max.ToString("0.00") 
-                + " c/kWh\nAvg: "
+                + " c/kWh (" 
+                + Content.MaxTime.Hour + ":00)\n" 
+                + "Avg: "
                 + Content.Avg.ToString("0.00")
                 + " c/kWh";
         }
