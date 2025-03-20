@@ -121,8 +121,8 @@
     <value>http://www.porssisahkoa.fi/api/</value>
     <comment>API base address</comment>
   </data>
-  <data name="SpotPrice.API.RequestUri" xml:space="preserve">
+  <data name="SpotPrice.API.RequestPath" xml:space="preserve">
     <value>Prices/GetPrices?mode=1</value>
-    <comment>API request URI</comment>
+    <comment>API request path</comment>
   </data>
 </root>

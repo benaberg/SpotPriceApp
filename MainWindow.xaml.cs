@@ -6,13 +6,12 @@ namespace SpotPriceApp
 {
     public partial class MainWindow : Window
     {
-        private readonly List<SpotPriceReading>? _Readings = new List<SpotPriceReading>();
-        private NotifyIcon _NotifyIcon = new NotifyIcon();
+        private readonly NotifyIcon _NotifyIcon = new();
 
         public MainWindow()
         {
-            _Readings = SpotPriceFetcher.FetchPrices();
-            SpotPriceFetcher.InitUpdate(30, _Readings, (Content) =>
+            List<SpotPriceReading>? _readings = SpotPriceFetcher.FetchPrices();
+            SpotPriceFetcher.InitUpdate(30, _readings, (Content) =>
             {
                 PriceLabel.Content = Content.LabelPrice;
                 Color Color = Content.Color;
@@ -30,19 +29,19 @@ namespace SpotPriceApp
                     WindowState = WindowState.Normal;
                 };
 
-            HorizontalListBox.ItemsSource = _Readings;
-            HorizontalListBox.ScrollIntoView(_Readings.Where(reading => reading.Time.Hour == DateTime.Now.Hour).ToList().FirstOrDefault());
+            HorizontalListBox.ItemsSource = _readings;
+            HorizontalListBox.ScrollIntoView(_readings.Where(reading => reading.Time.Hour == DateTime.Now.Hour).ToList().FirstOrDefault());
 
             Hide();
         }
 
         public void UpdateTrayIcon(LabelContent Content)
         {
-            Bitmap Bitmap = new Bitmap(16, 16);
+            Bitmap Bitmap = new(16, 16);
             Graphics Graphics = Graphics.FromImage(Bitmap);
-            Font Font = new Font("Arial", 6, System.Drawing.FontStyle.Bold);
+            Font Font = new("Arial", 6, System.Drawing.FontStyle.Bold);
 
-            System.Drawing.Brush Brush = new SolidBrush(Content.Color);
+            Brush Brush = new SolidBrush(Content.Color);
 
             Graphics.DrawString(Content.IconPrice, Font, Brush, 0, 0);
 

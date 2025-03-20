@@ -72,9 +72,9 @@ namespace SpotPriceApp {
         /// <summary>
         ///   Looks up a localized string similar to Prices/GetPrices?mode=1.
         /// </summary>
-        internal static string SpotPrice_API_RequestUri {
+        internal static string SpotPrice_API_RequestPath {
             get {
-                return ResourceManager.GetString("SpotPrice.API.RequestUri", resourceCulture);
+                return ResourceManager.GetString("SpotPrice.API.RequestPath", resourceCulture);
             }
         }
     }

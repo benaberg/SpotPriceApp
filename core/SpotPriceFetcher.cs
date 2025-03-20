@@ -8,31 +8,33 @@ namespace SpotPriceApp.core
     {
         public static List<SpotPriceReading> FetchPrices()
         {
-            HttpClientHandler Handler = new HttpClientHandler
+            HttpClientHandler Handler = new()
             {
                 AutomaticDecompression = System.Net.DecompressionMethods.All
             };
 
-            HttpClient Client = new HttpClient(Handler);
+            HttpClient Client = new(Handler);
 
             using (Client)
             {
                 System.Diagnostics.Debug.WriteLine("Fetching API...");
                 Client.BaseAddress = new Uri(ApplicationResource.SpotPrice_API_BaseAddress);
-                HttpResponseMessage Response = Client.GetAsync(ApplicationResource.SpotPrice_API_RequestUri).Result;
+                HttpResponseMessage Response = Client.GetAsync(ApplicationResource.SpotPrice_API_RequestPath).Result;
                 Response.EnsureSuccessStatusCode();
                 return JsonConvert.DeserializeObject<List<SpotPriceReading>>(Response.Content.ReadAsStringAsync().Result);
             }
         }
 
-        public static async void InitUpdate(int Seconds, List<SpotPriceReading> Readings, Action<LabelContent> LabelAction)
+        public static async void InitUpdate(int Seconds, List<SpotPriceReading>? _readings, Action<LabelContent> LabelAction)
         {
-            if (Seconds <= 0 || Readings == null) { return; }
-
+            if (Seconds <= 0 || _readings == null) 
+            { 
+                return; 
+            }
             var PeriodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(Seconds));
             while (await PeriodicTimer.WaitForNextTickAsync())
             {
-                UpdateLabel(Readings, LabelAction);
+                UpdateLabel(_readings, LabelAction);
             }
         }
 
@@ -43,7 +45,7 @@ namespace SpotPriceApp.core
                 Readings = FetchPrices();
                 System.Diagnostics.Debug.WriteLine("Readings updated!");
             }
-            LabelContent Content = new LabelContent(Readings.Count);
+            LabelContent Content = new(Readings.Count);
             Readings.ForEach(Reading =>
             {
                 Content.Max = Reading.Value > Content.Max ? Reading.Value : Content.Max;

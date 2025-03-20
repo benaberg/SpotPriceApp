@@ -10,7 +10,7 @@
             return PadBoth(Time.Hour.ToString("D2"), 6) + "\n" + Value.ToString("0.00") + " c";
         }
 
-        private string PadBoth(string Source, int Length)
+        private static string PadBoth(string Source, int Length)
         {
             int Spaces = Length - Source.Length;
             int PadLeft = Spaces / 2 + Source.Length;
