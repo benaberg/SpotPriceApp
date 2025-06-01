@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
+using Microsoft.Extensions.Configuration;
 using SpotPriceApp.core;
 using SpotPriceApp.model;
 
@@ -10,8 +12,18 @@ namespace SpotPriceApp
 
         public MainWindow()
         {
-            List<SpotPriceReading> Readings = SpotPriceFetcher.FetchPrices();
-            SpotPriceFetcher.InitUpdate(5, Readings, (Content) =>
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            IConfiguration config = builder.Build();
+            string host = config["AppSettings:Host"]!;
+            string path = config["AppSettings:Path"]!;
+            int retryInterval = config.GetValue<int>("AppSettings:RetryInterval");
+
+            SpotPriceFetcher spotPriceFetcher = new(host, path, retryInterval);
+            List<SpotPriceReading> Readings = spotPriceFetcher.FetchPrices();
+            spotPriceFetcher.InitUpdate(5, Readings, (Content) =>
             {
                 PriceLabel.Content = Content.LabelPrice;
                 Color Color = Content.Color;
