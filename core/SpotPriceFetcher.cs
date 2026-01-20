@@ -28,7 +28,7 @@ namespace SpotPriceApp.core
                 {
                     try
                     {
-                        _readings = PerformFetch(Client);
+                        _readings = PerformFetch(Client).Hour;
                     }
                     catch (Exception e)
                     {
@@ -42,12 +42,12 @@ namespace SpotPriceApp.core
             return _readings;
         }
 
-        private List<SpotPriceReading> PerformFetch(HttpClient Client)
+        private SpotPriceRoot PerformFetch(HttpClient Client)
         {
             System.Diagnostics.Debug.WriteLine("Fetching API...");
             HttpResponseMessage Response = Client.GetAsync(path).Result;
             Response.EnsureSuccessStatusCode();
-            return JsonConvert.DeserializeObject<List<SpotPriceReading>>(Response.Content.ReadAsStringAsync().Result);
+            return JsonConvert.DeserializeObject<SpotPriceRoot>(Response.Content.ReadAsStringAsync().Result);
         }
 
         public async void InitUpdate(int Seconds, List<SpotPriceReading>? _readings, Action<LabelContent> LabelAction)

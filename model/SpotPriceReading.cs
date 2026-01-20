@@ -1,9 +1,16 @@
 ﻿namespace SpotPriceApp.model
 {
+    internal class SpotPriceRoot
+    {
+        public required List<SpotPriceReading> Hour { get; set; }
+    }
+
     internal class SpotPriceReading
     {
         public required DateTimeOffset Time { get; set; }
         public required float Value { get; set; }
+
+        public List<SpotPriceReading> Min15Points { get; set; }
 
         public override string ToString()
         {
